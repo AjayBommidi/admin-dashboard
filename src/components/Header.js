@@ -1,28 +1,49 @@
-// export default function Header() {
-//   return (
-//     <div style={{
-//       background: "#222",
-//       color: "#fff",
-//       padding: "15px"
-//     }}>
-//       <h2>Admin Dashboard</h2>
-//     </div>
-//   );
-// }
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import "./Header.css";
 
+export default function Header({ search, setSearch, user }) {
+  const navigate = useNavigate();
 
+  const handleProfileClick = () => {
+    navigate("/profile");
+  };
 
-export default function Header() {
   return (
-    <div style={{
-      background: "#f5f5f5",
-      padding: "10px"
-    }}>
-      <h3>Dashboard</h3>
+    <div className="header">
+
+      {/* LEFT - LOGO */}
+      <div className="logo" style={{ cursor: "pointer" }} onClick={() => navigate("/dashboard")}>
+        🚗
+        <div>
+          <h2>BJR</h2>
+          <p>Luxury Cars</p>
+        </div>
+      </div>
+
+      {}
+      <div className="search">
+        <input
+          type="text"
+          placeholder="Search car name, model, price..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
+
+      {}
+      <div
+        className="right"
+        onClick={handleProfileClick}
+        style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "8px" }}
+        title="Click to view profile"
+      >
+        <span style={{ fontSize: "14px", color: "#e2e8f0" }}>
+          {user?.name || "Guest"}
+        </span>
+        <span style={{ fontSize: "24px" }}>👤</span>
+      </div>
+
     </div>
   );
 }
-
-
-
-

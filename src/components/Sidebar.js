@@ -1,41 +1,34 @@
-// export default function Sidebar() {
-//   return (
-//     <div style={{
-//       width: "200px",
-//       height: "100vh",
-//       background: "#eee",
-//       padding: "10px"
-//     }}>
-//       <p>🏠 Home</p>
-//       <p>📊 Dashboard</p>
-//       <p>⚙️ Settings</p>
-//     </div>
-//   );
-// }
-
-
-
-
-
-import { Link } from "react-router-dom";
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
+import "./Sidebar.css";
 
 export default function Sidebar() {
-  return (
-    <div style={{
-      width: "200px",
-      height: "100vh",
-      background: "#333",
-      color: "white",
-      padding: "20px"
-    }}>
-      <h3>Admin</h3>
+  const location = useLocation();
 
-      <p>
-        <Link to="/dashboard" style={{ color: "white" }}>
-          Dashboard
-        </Link>
-      </p>
+  const menuItems = [
+    { path: "/dashboard", icon: "🏠", label: "Dashboard" },
+    { path: "/cars", icon: "🚗", label: "Cars" },
+    { path: "/bookings", icon: "📦", label: "Bookings" },
+    { path: "/settings", icon: "⚙️", label: "Settings" },
+  ];
+
+  return (
+    <div className="sidebar">
+      <h3>Menu</h3>
+
+      <ul>
+        {menuItems.map((item) => (
+          <li key={item.path}>
+            <Link
+              to={item.path}
+              className={`menu-link ${location.pathname === item.path ? "active" : ""}`}
+            >
+              <span className="menu-icon">{item.icon}</span>
+              <span className="menu-label">{item.label}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
-
