@@ -12,7 +12,7 @@ export default function Header({ search, setSearch, user }) {
   return (
     <div className="header">
 
-      {/* LEFT - LOGO */}
+      {}
       <div className="logo" style={{ cursor: "pointer" }} onClick={() => navigate("/dashboard")}>
         🚗
         <div>

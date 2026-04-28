@@ -41,7 +41,7 @@ function CarsPage() {
               background: "white",
               borderRadius: "12px",
               padding: "20px",
-              boxShadow: "0 2px 10px rgba(0,0,0,0.08)"
+              boxShadow: "0 2px 10px rgba(155, 150, 150, 0.71)"
             }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
                 <h3 style={{ margin: 0 }}>{car.name}</h3>
@@ -973,17 +973,19 @@ function LoginPage({ onLogin }) {
   );
 }
 
-function RegisterPage({ onLogin }) {
+function RegisterPage() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
+    setSuccess("");
 
     if (!name || !email || !password || !confirmPassword) {
       setError("All fields are required");
@@ -1015,15 +1017,18 @@ function RegisterPage({ onLogin }) {
     users.push(newUser);
     localStorage.setItem("users", JSON.stringify(users));
 
-    onLogin(newUser);
-    navigate("/dashboard");
+    setSuccess("Registration successful! Redirecting to login...");
+    setTimeout(() => {
+      navigate("/login");
+    }, 1500);
   };
 
   return (
     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", background: "#0f172a" }}>
       <form onSubmit={handleSubmit} style={{ background: "white", padding: "40px", borderRadius: "10px", width: "350px" }}>
         <h2 style={{ textAlign: "center", marginBottom: "30px" }}>Register</h2>
-        {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
+        {error && <p style={{ color: "red", textAlign: "center", marginBottom: "15px" }}>{error}</p>}
+        {success && <p style={{ color: "green", textAlign: "center", marginBottom: "15px", fontWeight: "bold" }}>{success}</p>}
         <input
           type="text"
           placeholder="Full Name"
@@ -1076,12 +1081,21 @@ function ProtectedRoute({ user, children }) {
 function App() {
   const [search, setSearch] = useState("");
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
+  // Check localStorage for logged in user on app start
   useEffect(() => {
     const savedUser = localStorage.getItem("currentUser");
     if (savedUser) {
-      setUser(JSON.parse(savedUser));
+      try {
+        const parsedUser = JSON.parse(savedUser);
+        setUser(parsedUser);
+      } catch (e) {
+        console.error("Failed to parse user from localStorage");
+        localStorage.removeItem("currentUser");
+      }
     }
+    setLoading(false);
   }, []);
 
   const handleLogin = (userData) => {
@@ -1094,12 +1108,39 @@ function App() {
     localStorage.removeItem("currentUser");
   };
 
+  // Show loading spinner while checking auth state
+  if (loading) {
+    return (
+      <div style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        background: "#0f172a"
+      }}>
+        <div style={{ textAlign: "center" }}>
+          <div style={{
+            width: "50px",
+            height: "50px",
+            border: "4px solid #3b82f6",
+            borderTop: "4px solid transparent",
+            borderRadius: "50%",
+            animation: "spin 1s linear infinite",
+            margin: "0 auto 20px"
+          }} />
+          <p style={{ color: "white", fontSize: "16px" }}>Loading...</p>
+          <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <BrowserRouter>
       <Routes>
         {}
         <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
-        <Route path="/register" element={<RegisterPage onLogin={handleLogin} />} />
+        <Route path="/register" element={<RegisterPage />} />
 
         {}
         <Route
